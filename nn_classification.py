@@ -24,9 +24,25 @@ def ex_2_1(input2, target2):
     :param target2: The target from dataset2
     :return:
     """
-    ## TODO
-    pass
+    # parse target2 2nd column
+    pose2 = []
+    for target in target2:
+        pose2.append(target[1])
 
+    mlp = MLPClassifier(activation='tanh', hidden_layer_sizes=6)
+    print("===========fit started===========")
+    mlp.fit(input2, pose2)
+    print("===========fit finished===========")
+    print("classes_: ", mlp.classes_)
+    print("n_layers_: ", mlp.n_layers_)
+    plot_hidden_layer_weights(mlp.coefs_[0])
+
+    print("===========predict started===========")
+    prediction = mlp.predict(input2)
+    print("===========predict finished===========")
+    cnf_matrix = confusion_matrix(pose2, prediction)
+    print(cnf_matrix)
+    return
 
 def ex_2_2(input1, target1, input2, target2):
     """
