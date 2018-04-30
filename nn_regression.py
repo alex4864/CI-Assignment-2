@@ -5,6 +5,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.neural_network.multilayer_perceptron import MLPRegressor
 import matplotlib.pyplot as plt
 import numpy
+from sklearn.cross_validation import train_test_split
 from nn_regression_plot import plot_mse_vs_neurons, plot_mse_vs_iterations, plot_learned_function, \
     plot_mse_vs_alpha, plot_bars_early_stopping_mse_comparison
 
@@ -145,15 +146,13 @@ def ex_1_1_d(x_train, x_test, y_train, y_test):
     test_mses = numpy.zeros((3,n_iterations))
     r = 0
     for n_hidden_neuron in hidden_neurons_list :
+        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(n_hidden_neuron, ), activation='logistic', solver='sgd', alpha=0,tol= 1e-8, max_iter=1)
         for i in range(n_iterations):
-            trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(n_hidden_neuron, ), activation='logistic', solver='lbfgs', alpha=0,tol= 1e-8, max_iter=1,random_state=i)
             trained_regressor = trained_regressor.fit(x_train,y_train)
             train_mses[r][i] = calculate_mse(trained_regressor,x_train,y_train)
             test_mses[r][i] = calculate_mse(trained_regressor,x_test,y_test)
         r = r + 1
-    plot_mse_vs_neurons(train_mses, test_mses, hidden_neurons_list)
-
-    ## TODO
+    plot_mse_vs_iterations(train_mses, test_mses, n_iterations, hidden_neurons_list)
     pass
 
 
@@ -167,20 +166,20 @@ def ex_1_2_a(x_train, x_test, y_train, y_test):
     :param y_test: The testing targets
     :return:
     """
-    # alph = [pow(10,−8),pow(10,−7),pow(10,−6),pow(10,−5),pow(10,−4),pow(10,−3),pow(10,−2),pow(10,−1),1,10,100]
-    # n_iterations = 10000
+    alphas = [pow(10,-8),pow(10,-7),pow(10,-6),pow(10,-5),pow(10,-4),pow(10,-3),pow(10,-2),pow(10,-1),1,10,100]
+    n_iterations = 10
 
-    # train_mses = numpy.zeros((3,n_iterations))
-    # test_mses = numpy.zeros((3,n_iterations))
-    # r = 0
-    # for n_hidden_neuron in hidden_neurons_list :
-    #     for i in range(n_iterations):
-    #         trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(n_hidden_neuron, ), activation='logistic', solver='lbfgs', alpha=0,tol= 1e-8, max_iter=1,random_state=i)
-    #         trained_regressor = trained_regressor.fit(x_train,y_train)
-    #         train_mses[r][i] = calculate_mse(trained_regressor,x_train,y_train)
-    #         test_mses[r][i] = calculate_mse(trained_regressor,x_test,y_test)
-    #     r = r + 1
-    # plot_mse_vs_neurons(train_mses, test_mses, hidden_neurons_list)
+    train_mses = numpy.zeros((11,n_iterations))
+    test_mses = numpy.zeros((11,n_iterations))
+    r = 0
+    for alph in alphas :
+        for i in range(n_iterations):
+            trained_regressor = MLPRegressor(hidden_layer_sizes=(8, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=200,random_state=i)
+            trained_regressor = trained_regressor.fit(x_train,y_train)
+            train_mses[r][i] = calculate_mse(trained_regressor,x_train,y_train)
+            test_mses[r][i] = calculate_mse(trained_regressor,x_test,y_test)
+        r = r + 1
+    plot_mse_vs_alpha(train_mses, test_mses, alphas)
     pass
 
 
@@ -194,7 +193,36 @@ def ex_1_2_b(x_train, x_test, y_train, y_test):
     :param y_test: The testing targets
     :return:
     """
-    ## TODO
+
+    x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
+
+
+    n_random_seed = 10
+    test_mse_end = numpy.zeros(n_random_seed)
+    test_mse_early_stopping = numpy.zeros(n_random_seed)
+    test_mse_ideal = numpy.zeros(n_random_seed)
+    r = 0
+    for i in range(n_random_seed) :
+        val_mses = 0
+        test_val_mses = 0
+
+        test_mses = 0
+        
+        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=pow(10,-3),tol= 1e-8, max_iter=20,random_state=i)
+        for j in range(100):
+            trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
+            temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
+            if val_mses == 0 or val_mses > temp_val_mses:
+                val_mses = temp_val_mses
+                test_val_mses = calculate_mse(trained_regressor,x_test,y_test)
+
+            temp_test_mses = calculate_mse(trained_regressor,x_test,y_test)
+            if test_mses == 0 or test_mses > temp_test_mses:
+                test_mses = temp_test_mses    
+        test_mse_end[i] = calculate_mse(trained_regressor,x_test,y_test)
+        test_mse_early_stopping[i] = test_val_mses
+        test_mse_ideal[i] = test_mses
+    plot_bars_early_stopping_mse_comparison(test_mse_end, test_mse_early_stopping, test_mse_ideal)
     pass
 
 
