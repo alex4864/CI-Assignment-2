@@ -1,8 +1,9 @@
 import numpy as np
+import random
 from sklearn.metrics import mean_squared_error
 from sklearn.neural_network.multilayer_perceptron import MLPRegressor
 import matplotlib.pyplot as plt
-
+import numpy
 from nn_regression_plot import plot_mse_vs_neurons, plot_mse_vs_iterations, plot_learned_function, \
     plot_mse_vs_alpha, plot_bars_early_stopping_mse_comparison
 
@@ -27,8 +28,8 @@ def calculate_mse(nn, x, y):
     :param y: The targets
     :return: Training MSE, Testing MSE
     """
-    ## TODO
-    mse = 0
+    y_pred = nn.predict(x)
+    mse = mean_squared_error(y, y_pred)
     return mse
 
 
@@ -43,7 +44,7 @@ def ex_1_1_a(x_train, x_test, y_train, y_test):
     :return:
     """
     n_hidden = 8
-    trained_regressor = MLPRegressor(hidden_layer_sizes=(n_hidden, ), activation='logistic', solver='lbfgs', alpha=0, max_iter=200, random_state=True)
+    trained_regressor = MLPRegressor(hidden_layer_sizes=(n_hidden, ), activation='logistic', solver='lbfgs', alpha=0, max_iter=200, random_state=1)
     trained_regressor = trained_regressor.fit(x_train,y_train)
     y_pred_train = trained_regressor.predict(x_train)
     y_pred_test = trained_regressor.predict(x_test)
@@ -61,8 +62,33 @@ def ex_1_1_b(x_train, x_test, y_train, y_test):
     :param y_test: The testing targets
     :return:
     """
+    n_iterations = 10
+    train_mses = numpy.zeros(n_iterations)
+    test_mses = numpy.zeros(n_iterations)
+    for i in range(n_iterations):
+        trained_regressor = MLPRegressor(warm_start = False, hidden_layer_sizes=(8, ), activation='logistic', solver='lbfgs', alpha=0, max_iter=200, random_state=random.randint(1,100))
+        trained_regressor = trained_regressor.fit(x_train,y_train)
+        train_mses[i] = calculate_mse(trained_regressor,x_train,y_train)
+        test_mses[i] = calculate_mse(trained_regressor,x_test,y_test)
+    
+    print ("Train_mses")
+    print (train_mses)
+    print ("Train_min")
+    print (train_mses.min())
+    print ("Train_max")
+    print (train_mses.max())
+    print ("Train_std")
+    print (train_mses.std())
 
-    ## TODO
+    print ("Test_mses")
+    print (test_mses)
+    print ("Test_min")
+    print (test_mses.min())
+    print ("Test_max")
+    print (test_mses.max())
+    print ("Test_std")
+    print (test_mses.std())
+
     pass
 
 
