@@ -42,8 +42,12 @@ def ex_1_1_a(x_train, x_test, y_train, y_test):
     :param y_test: The testing targets
     :return:
     """
-
-    ## TODO
+    n_hidden = 8
+    trained_regressor = MLPRegressor(hidden_layer_sizes=(n_hidden, ), activation='logistic', solver='lbfgs', alpha=0, max_iter=200, random_state=True)
+    trained_regressor = trained_regressor.fit(x_train,y_train)
+    y_pred_train = trained_regressor.predict(x_train)
+    y_pred_test = trained_regressor.predict(x_test)
+    plot_learned_function(n_hidden, x_train, y_train, y_pred_train, x_test, y_test, y_pred_test)
     pass
 
 
