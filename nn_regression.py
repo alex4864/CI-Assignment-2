@@ -235,5 +235,54 @@ def ex_1_2_c(x_train, x_test, y_train, y_test):
     :param y_test:
     :return:
     """
-    ## TODO
+    h_layer_size = 40
+    alph = pow(10,-2)
+    
+    x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
+    n_random_seed = 10
+    test_mse_list = numpy.zeros(n_random_seed)
+    val_mse_list = numpy.zeros(n_random_seed)
+    train_mse_list = numpy.zeros(n_random_seed)
+    
+    for i in range(n_random_seed) :
+        val_mses = 0
+        test_mses = 0 
+        train_mses = 0   
+        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(h_layer_size, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=20,random_state=i)
+        for j in range(100):
+            trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
+            temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
+            if val_mses == 0 or val_mses > temp_val_mses:
+                val_mses = temp_val_mses
+                test_mses = calculate_mse(trained_regressor,x_test,y_test)
+                train_mses = calculate_mse(trained_regressor,x_train,y_train)
+
+        test_mse_list[i] = test_mses
+        val_mse_list[i] = val_mses
+        train_mse_list[i] = train_mses
+    print ("Traing set error")
+    print ("min : ")
+    print (train_mse_list.min())
+    print ("standard deviation")
+    print (train_mse_list.std())
+    print ("Validation set error")
+    print ("min : ")
+    print (val_mse_list.min())
+    print ("standard deviation")
+    print (val_mse_list.std())
+    print ("Test set error")
+    print ("min")
+    print (test_mse_list.min())
+    print ("standard deviation")
+    print (test_mse_list.std())
+
+    ind = np.argmin(val_mse_list)
+    print ("Optimal random seed")
+    print ("Train error : ")
+    print (train_mse_list[ind])
+    print ("Validation error")
+    print (val_mse_list[ind])
+    print ("Test error : ")
+    print (test_mse_list[ind])
+    
     pass
