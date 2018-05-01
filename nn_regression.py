@@ -45,8 +45,8 @@ def ex_1_1_a(x_train, x_test, y_train, y_test):
     :param y_test: The testing targets
     :return:
     """
-    n_hidden = 8
-    trained_regressor = MLPRegressor(hidden_layer_sizes=(n_hidden, ), activation='logistic', solver='lbfgs', alpha=0, max_iter=200, random_state=1)
+    n_hidden = 40
+    trained_regressor = MLPRegressor(hidden_layer_sizes=(n_hidden, ), activation='logistic', solver='lbfgs', alpha=0, max_iter=200, random_state=1000)
     trained_regressor = trained_regressor.fit(x_train,y_train)
     y_pred_train = trained_regressor.predict(x_train)
     y_pred_test = trained_regressor.predict(x_test)
@@ -77,6 +77,8 @@ def ex_1_1_b(x_train, x_test, y_train, y_test):
     print (train_mses)
     print ("Train_min")
     print (train_mses.min())
+    print ("Train_min_seed")
+    print (np.argmin(train_mses))
     print ("Train_max")
     print (train_mses.max())
     print ("Train_std")
@@ -86,6 +88,8 @@ def ex_1_1_b(x_train, x_test, y_train, y_test):
     print (test_mses)
     print ("Test_min")
     print (test_mses.min())
+    print ("Test_min_seed")
+    print (np.argmin(test_mses))
     print ("Test_max")
     print (test_mses.max())
     print ("Test_std")
@@ -146,7 +150,7 @@ def ex_1_1_d(x_train, x_test, y_train, y_test):
     test_mses = numpy.zeros((3,n_iterations))
     r = 0
     for n_hidden_neuron in hidden_neurons_list :
-        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(n_hidden_neuron, ), activation='logistic', solver='sgd', alpha=0,tol= 1e-8, max_iter=1)
+        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(n_hidden_neuron, ), activation='logistic', solver='adam', alpha=0,tol= 1e-8, max_iter=1)
         for i in range(n_iterations):
             trained_regressor = trained_regressor.fit(x_train,y_train)
             train_mses[r][i] = calculate_mse(trained_regressor,x_train,y_train)
@@ -284,5 +288,5 @@ def ex_1_2_c(x_train, x_test, y_train, y_test):
     print (val_mse_list[ind])
     print ("Test error : ")
     print (test_mse_list[ind])
-    
+
     pass
