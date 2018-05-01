@@ -72,7 +72,7 @@ def ex_1_1_b(x_train, x_test, y_train, y_test):
         trained_regressor = trained_regressor.fit(x_train,y_train)
         train_mses[i] = calculate_mse(trained_regressor,x_train,y_train)
         test_mses[i] = calculate_mse(trained_regressor,x_test,y_test)
-    
+
     print ("Train_mses")
     print (train_mses)
     print ("Train_min")
@@ -178,7 +178,7 @@ def ex_1_2_a(x_train, x_test, y_train, y_test):
     r = 0
     for alph in alphas :
         for i in range(n_iterations):
-            trained_regressor = MLPRegressor(hidden_layer_sizes=(8, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=200,random_state=i)
+            trained_regressor = MLPRegressor(hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=200,random_state=i)
             trained_regressor = trained_regressor.fit(x_train,y_train)
             train_mses[r][i] = calculate_mse(trained_regressor,x_train,y_train)
             test_mses[r][i] = calculate_mse(trained_regressor,x_test,y_test)
@@ -211,7 +211,7 @@ def ex_1_2_b(x_train, x_test, y_train, y_test):
         test_val_mses = 0
 
         test_mses = 0
-        
+
         trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=pow(10,-3),tol= 1e-8, max_iter=20,random_state=i)
         for j in range(100):
             trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
@@ -222,7 +222,7 @@ def ex_1_2_b(x_train, x_test, y_train, y_test):
 
             temp_test_mses = calculate_mse(trained_regressor,x_test,y_test)
             if test_mses == 0 or test_mses > temp_test_mses:
-                test_mses = temp_test_mses    
+                test_mses = temp_test_mses
         test_mse_end[i] = calculate_mse(trained_regressor,x_test,y_test)
         test_mse_early_stopping[i] = test_val_mses
         test_mse_ideal[i] = test_mses
@@ -241,17 +241,18 @@ def ex_1_2_c(x_train, x_test, y_train, y_test):
     """
     h_layer_size = 40
     alph = pow(10,-2)
-    
+    #alphas = [pow(10,-8),pow(10,-7),pow(10,-6),pow(10,-5),pow(10,-4),pow(10,-3),pow(10,-2),pow(10,-1),1,10,100]
+
     x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
     n_random_seed = 10
     test_mse_list = numpy.zeros(n_random_seed)
     val_mse_list = numpy.zeros(n_random_seed)
     train_mse_list = numpy.zeros(n_random_seed)
-    
+
     for i in range(n_random_seed) :
         val_mses = 0
-        test_mses = 0 
-        train_mses = 0   
+        test_mses = 0
+        train_mses = 0
         trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(h_layer_size, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=20,random_state=i)
         for j in range(100):
             trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
