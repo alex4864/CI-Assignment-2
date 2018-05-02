@@ -120,8 +120,8 @@ iteration number and its random seed.
     Early stopping iteration number/20 & 24 & 21 & 21 & 24 & 21 & 21 & 21 & 21 & 24 & 24 \\ \hline
     Random seed                        & 1  & 0  & 0  & 1  & 0  & 0  & 0  & 0  & 1  & 1  \\ \hline
   \end{tabular}
-  \hspace{2em}
   \caption{np.random.randint(2)}
+  \vspace{2em}
   \begin{tabular}{|
     >{\columncolor[HTML]{C0C0C0}}l |l|l|l|l|l|l|l|l|l|l|}
     \hline
@@ -131,9 +131,37 @@ iteration number and its random seed.
   \caption{np.random.randint(10000)}
   \end{center}
 \end{table}
-The standard form of early stopping could stop earlier than our imlementation. But it cannot ensure minimum MSE.
+The standard form of early stopping could stop earlier than our imlementation. But it cannot ensure the minimum of MSE.
 In our implementation ensures the minimum value of MSE.
+\clearpage
 \subsubsection{Combining the tricks}
+First, to find the number of hidden neurons, settled Regularization parameter as
+$10^{-2}$(because it is optimal of 1.2.a), solver as 'lbfgs'. Then, I tried to find the minimum of the mean of
+testing error while changing the number of neurons from 2 to 40. When the number
+of neurons was 25, the mean of testing error was minimum. After figuring out the
+number of neurons, settled it as 25, I tried all three solver and 'lbfgs' was the best.
+Finally, I changed regularization parameter as same range as 1.2.a.
+The number of hidden neurons is 25. Regularization parameter is $10^{-3}$, Solver is 'lbfgs'.
+\begin{table}[h]
+  \begin{center}
+    \begin{tabular}{|l|l|l|}
+      \hline
+      & mean                 & standard deviation    \\ \hline
+      training set error   & 0.053564358953767585 & 0.0016082907699279377 \\ \hline
+      validation set error & 0.06361285376287637  & 0.0022871324704669977 \\ \hline
+      testing set error    & 0.1278987472019101   & 0.009530319307564717  \\ \hline
+    \end{tabular}
+    \caption{Mean and standard deviation of each set}
+    \vspace{2em}
+    \begin{tabular}{|c|c|c|}
+      \hline
+      Training set        & Validation set       & Testing set         \\ \hline
+      0.05159202770739599 & 0.056986716577796845 & 0.11396665516400696 \\ \hline
+    \end{tabular}
+    \caption{Training, validation and testing error of optimal random seed}
+  \end{center}
+\end{table}
+\clearpage
 \section{Face Recognition with Neural Networks}
 \subsection{Pose Recognition}
 The confusion matrix is below. Pose 'left' and 'right' was seperated better than others.\\
@@ -154,5 +182,6 @@ The confusion matrix is below. Pose 'left' and 'right' was seperated better than
   \end{center}
 \end{figure}\\
 It looks like hair and sunglasses get more weights then others.
+\clearpage
 \subsection{Face Recognition}
 \end{document}

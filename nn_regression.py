@@ -247,55 +247,74 @@ def ex_1_2_c(x_train, x_test, y_train, y_test):
     :param y_test:
     :return:
     """
-    h_layer_size = 40
-    alph = pow(10,-2)
-    #alphas = [pow(10,-8),pow(10,-7),pow(10,-6),pow(10,-5),pow(10,-4),pow(10,-3),pow(10,-2),pow(10,-1),1,10,100]
+    train_err_means = np.zeros(11)
+    train_err_stds = np.zeros(11)
+    val_err_means = np.zeros(11)
+    val_err_stds = np.zeros(11)
+    test_err_means = np.zeros(11)
+    test_err_stds = np.zeros(11)
+    opt_seeds = np.zeros(11)
+    opt_trains = np.zeros(11)
+    opt_vals = np.zeros(11)
+    opt_tests = np.zeros(11)
+    h_layer_size = 25
+    solver = 'lbfgs'
+    alphas = [pow(10,-8),pow(10,-7),pow(10,-6),pow(10,-5),pow(10,-4),pow(10,-3),pow(10,-2),pow(10,-1),1,10,100]
 
-    x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
     n_random_seed = 10
-    test_mse_list = numpy.zeros(n_random_seed)
-    val_mse_list = numpy.zeros(n_random_seed)
-    train_mse_list = numpy.zeros(n_random_seed)
+    x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
 
-    for i in range(n_random_seed) :
-        val_mses = 0
-        test_mses = 0
-        train_mses = 0
-        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(h_layer_size, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=20,random_state=i)
-        for j in range(100):
-            trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
-            temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
-            if val_mses == 0 or val_mses > temp_val_mses:
-                val_mses = temp_val_mses
-                test_mses = calculate_mse(trained_regressor,x_test,y_test)
-                train_mses = calculate_mse(trained_regressor,x_train,y_train)
+    for k in range(11) :
+        test_mse_list = numpy.zeros(n_random_seed)
+        val_mse_list = numpy.zeros(n_random_seed)
+        train_mse_list = numpy.zeros(n_random_seed)
+        random_seeds = numpy.zeros(n_random_seed)
 
-        test_mse_list[i] = test_mses
-        val_mse_list[i] = val_mses
-        train_mse_list[i] = train_mses
-    print ("Traing set error")
-    print ("min : ")
-    print (train_mse_list.min())
-    print ("standard deviation")
-    print (train_mse_list.std())
-    print ("Validation set error")
-    print ("min : ")
-    print (val_mse_list.min())
-    print ("standard deviation")
-    print (val_mse_list.std())
-    print ("Test set error")
-    print ("min")
-    print (test_mse_list.min())
-    print ("standard deviation")
-    print (test_mse_list.std())
+        for i in range(n_random_seed) :
+            val_mses = 0
+            test_mses = 0
+            train_mses = 0
+            random_seed = np.random.randint(10000)
+            trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(h_layer_size, ), activation='logistic', solver=solver, alpha=alphas[k],tol= 1e-8, max_iter=20,random_state=random_seed)
+            for j in range(100):
+                trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
+                temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
+                if val_mses == 0 or val_mses > temp_val_mses:
+                    val_mses = temp_val_mses
+                    test_mses = calculate_mse(trained_regressor,x_test,y_test)
+                    train_mses = calculate_mse(trained_regressor,x_train,y_train)
 
-    ind = np.argmin(val_mse_list)
-    print ("Optimal random seed")
-    print ("Train error : ")
-    print (train_mse_list[ind])
-    print ("Validation error")
-    print (val_mse_list[ind])
-    print ("Test error : ")
-    print (test_mse_list[ind])
+            test_mse_list[i] = test_mses
+            val_mse_list[i] = val_mses
+            train_mse_list[i] = train_mses
+            random_seeds[i] = random_seed
 
+        train_err_means[k] = train_mse_list.mean()
+        train_err_stds[k] = train_mse_list.std()
+        val_err_means[k] = val_mse_list.mean()
+        val_err_stds[k] = val_mse_list.std()
+        test_err_means[k] = test_mse_list.mean()
+        test_err_stds[k] = test_mse_list.std()
+
+        ind = np.argmin(val_mse_list)
+        opt_seeds[k] = random_seeds[ind]
+        opt_trains[k] = train_mse_list[ind]
+        opt_vals[k] = val_mse_list[ind]
+        opt_tests[k] = test_mse_list[ind]
+
+    print ("===[Traing set error]===")
+    i = np.argmin(train_err_means)
+    print ("mean:", train_err_means[i], ", std:", train_err_stds[i] , "when a =", alphas[i])
+    print ("Optimal random seed) train:", opt_trains[i], ", val:", opt_vals[i], ", test:", opt_tests[i])
+    print ("random seed was", opt_seeds[i])
+    print ("===[Validation set error]===")
+    i = np.argmin(val_err_means)
+    print ("mean:", val_err_means[i], ", std:", val_err_stds[i] , "when a =", alphas[i])
+    print ("Optimal random seed) train:", opt_trains[i], ", val:", opt_vals[i], ", test:", opt_tests[i])
+    print ("random seed was", opt_seeds[i])
+    print ("===[Test set error]===")
+    i = np.argmin(test_err_means)
+    print ("mean:", test_err_means[i], ", std:", test_err_stds[i] , "when a =", alphas[i])
+    print ("Optimal random seed) train:", opt_trains[i], ", val:", opt_vals[i], ", test:", opt_tests[i])
+    print ("random seed was", opt_seeds[i])
     pass

@@ -1,0 +1,9 @@
+===[Traing set error]===
+mean: 0.053564358953767585 , std: 0.0016082907699279377 when a = 0.001
+===[Validation set error]===
+mean: 0.06361285376287637 , std: 0.0022871324704669977 when a = 0.001
+===[Test set error]===
+mean: 0.1278987472019101 , std: 0.009530319307564717 when a = 0.001
+===[Optimal random seed]===
+train: 0.05159202770739599 , val: 0.056986716577796845 , test: 0.11396665516400696
+random seed was 2034.0
