@@ -1,6 +1,7 @@
 \documentclass[a4paper]{article}
 \usepackage{amsmath, amssymb, bm}
 \usepackage[margin=1in]{geometry}
+\usepackage[table,xcdraw]{xcolor}
 \usepackage{graphicx}
 \begin{document}
 \begin{titlepage}
@@ -97,7 +98,41 @@ zero and it makes the neural network simpler.
   \caption{Plots of the variation of MSE of the training and test set with the value of $\alpha$}
   \end{center}
 \end{figure}
+\clearpage
 \subsubsection{Early Stopping}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{ex_1_2_b.png}\\
+    \caption{Early stopping MSE comparision when randint(10000)}
+    \includegraphics[width=0.5\textwidth]{ex_1_2_b_rand2.png}\\
+    \caption{Early stopping MSE comparision when randint(2)}
+  \end{center}
+\end{figure}
+As 1.1.b the variability of the MSE across seeds is expected, so it is expected that
+early stopping happens at different iteration number if the random seed is differnent.
+This expectation is coherent with our results. Below is a table of early stopped
+iteration number and its random seed.
+\begin{table}[h]
+  \begin{center}
+  \begin{tabular}{|
+    >{\columncolor[HTML]{C0C0C0}}l |l|l|l|l|l|l|l|l|l|l|}
+    \hline
+    Early stopping iteration number/20 & 24 & 21 & 21 & 24 & 21 & 21 & 21 & 21 & 24 & 24 \\ \hline
+    Random seed                        & 1  & 0  & 0  & 1  & 0  & 0  & 0  & 0  & 1  & 1  \\ \hline
+  \end{tabular}
+  \hspace{2em}
+  \caption{np.random.randint(2)}
+  \begin{tabular}{|
+    >{\columncolor[HTML]{C0C0C0}}l |l|l|l|l|l|l|l|l|l|l|}
+    \hline
+    Early stopping iteration number/20 & 9    & 8    & 4    & 9    & 7    & 8    & 6    & 7    & 7    & 6    \\ \hline
+    Random seed                        & 3703 & 1380 & 3277 & 3711 & 1547 & 8732 & 4389 & 6998 & 7911 & 4603 \\ \hline
+  \end{tabular}
+  \caption{np.random.randint(10000)}
+  \end{center}
+\end{table}
+The standard form of early stopping could stop earlier than our imlementation. But it cannot ensure minimum MSE.
+In our implementation ensures the minimum value of MSE.
 \subsubsection{Combining the tricks}
 \section{Face Recognition with Neural Networks}
 \subsection{Pose Recognition}
