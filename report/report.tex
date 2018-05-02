@@ -88,6 +88,15 @@ The interesting fact of Figure 9 is that it seems to overcome overfitting proble
 I think Adam works well when the number of nuerons increases. Because, when the number of neruons increases, the risk of overfitting problem also increase. Then, Adam can avoid the overfitting problem by sub-sampling. That is, Adam is more appropriate than other solvers.
 \subsection{Regularized Neural Networks}
 \subsubsection{Weight Decay}
+The best value of $\alpha$ is $10^{-2}$. Regularization is used to overcome
+overfitting. The second term in loss function makes weights are close to
+zero and it makes the neural network simpler.
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=0.8\textwidth]{ex_1_2_a.png}\\
+  \caption{plots of the variation of MSE of the training and test set with the value of $\alpha$}
+  \end{center}
+\end{figure}
 \subsubsection{Early Stopping}
 \subsubsection{Combining the tricks}
 \section{Face Recognition with Neural Networks}
