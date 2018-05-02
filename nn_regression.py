@@ -205,20 +205,24 @@ def ex_1_2_b(x_train, x_test, y_train, y_test):
     test_mse_end = numpy.zeros(n_random_seed)
     test_mse_early_stopping = numpy.zeros(n_random_seed)
     test_mse_ideal = numpy.zeros(n_random_seed)
+    easy_stopping_iter = []
+    rand_seeds = []
     r = 0
     for i in range(n_random_seed) :
         val_mses = 0
         test_val_mses = 0
-
         test_mses = 0
+        stop_iter = 200
+        rand_seed = np.random.randint(2)
 
-        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=pow(10,-3),tol= 1e-8, max_iter=20,random_state=i)
+        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=pow(10,-3),tol= 1e-8, max_iter=20,random_state=rand_seed)
         for j in range(100):
             trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
             temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
             if val_mses == 0 or val_mses > temp_val_mses:
                 val_mses = temp_val_mses
                 test_val_mses = calculate_mse(trained_regressor,x_test,y_test)
+                stop_iter = j
 
             temp_test_mses = calculate_mse(trained_regressor,x_test,y_test)
             if test_mses == 0 or test_mses > temp_test_mses:
@@ -226,7 +230,11 @@ def ex_1_2_b(x_train, x_test, y_train, y_test):
         test_mse_end[i] = calculate_mse(trained_regressor,x_test,y_test)
         test_mse_early_stopping[i] = test_val_mses
         test_mse_ideal[i] = test_mses
+        easy_stopping_iter.append(stop_iter)
+        rand_seeds.append(rand_seed)
     plot_bars_early_stopping_mse_comparison(test_mse_end, test_mse_early_stopping, test_mse_ideal)
+    print(easy_stopping_iter)
+    print(rand_seeds)
     pass
 
 
