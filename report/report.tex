@@ -25,12 +25,12 @@
 
 These following graphs are regression functions with 2,8 and 40 hidden neurons.\\
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{ex_1_1_a_2.png}
-\caption{hidden nueron = 2}
-\includegraphics[width=0.5\textwidth]{ex_1_1_a_8.png}
-\caption{hidden nueron = 8}
-\includegraphics[width=0.5\textwidth]{ex_1_1_a_40.png}
-\caption{hidden nueron = 40}
+  \includegraphics[width=0.5\textwidth]{ex_1_1_a_2.png}
+  \caption{hidden nueron = 2}
+  \includegraphics[width=0.5\textwidth]{ex_1_1_a_8.png}
+  \caption{hidden nueron = 8}
+  \includegraphics[width=0.5\textwidth]{ex_1_1_a_40.png}
+  \caption{hidden nueron = 40}
 \end{figure}
 
 \noindent
@@ -48,8 +48,8 @@ It is the best fit to the dataset. I thought that there would be overfitting bec
 \subsubsection{Variability of the performance of deep neural networks}
 This is  minimum, maximum, mean and standard deviation of the mean square error obtained on the training set and test set. \\
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{ex_1_1_b.png}\\
-\caption{min, max, mean and std of MSE}
+  \includegraphics[width=0.5\textwidth]{ex_1_1_b.png}\\
+  \caption{min, max, mean and std of MSE}
 \end{figure}
 Even though 5th seed is the min of train error, second seed is the min of test error. As the above result, the min of train error doesn't ensure the mind of test error. If the regression graph is overfitted to the train data, it will have really low train error but have high test error. To prevent this overfitting problem, we can use validaiton set. Before seed the train dataset to the regressor, we divide the train dataset into new train dataset and validation dataset. Therfore, we can select the seed depending not on the min of train error but on the validation error. By doing this, we can avoid overfitting problem and get more accurate regression function.\\
 Even if the algorithm converged, the variability of the MSE across seeds is expected. It is because neural networks can select the graph shape freely. In the case of linear-regression and logistic regression, its dimension(graph shape) is decided by parameter. However, in the case of nerual networks, the graph shape can be decided by neural networks learning. Therefore, depending on the random seed, the optimal graph shape can be different even though the alogorithm converged. That is, the different optimal graph shape makes the variability of the MSE across seeds.\\
@@ -58,27 +58,27 @@ Standard Gardient Descent(GD) takes long time to cacluate the whole dataset grad
 \subsubsection{Varying the number of hidden neurons}
 This following graph is the MSE plot depending on the hidden neuron number.\\
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{ex_1_1_c.png}\\
-\caption{MSE plot with the hidden neuron number(n = [1,2,3,4,6,8,12,20,40])}
+  \includegraphics[width=0.5\textwidth]{ex_1_1_c.png}\\
+  \caption{MSE plot with the hidden neuron number(n = [1,2,3,4,6,8,12,20,40])}
 \end{figure}\\
 The best value of $n_h$ independently of the choice of the random seed, is \b 6.\\
 Before 6, it is underfitted Therefore, as the hidden neuron number increase, the MSE decreases.
 This following graph is the learned function for one of the models trained with $n_h = 40 (max-iter=10000, tol=1e-8)$\\
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{ex_1_1_c_40.png}\\
-\caption{learned function of $n_h = 40 (max-iter=10000, tol=1e-8)$}
+  \includegraphics[width=0.5\textwidth]{ex_1_1_c_40.png}\\
+  \caption{learned function of $n_h = 40 (max-iter=10000, tol=1e-8)$}
 \end{figure}\\
 As the figure 6 shows, the function of 40 hidden neurons is overfitted to the train dataset. And, as the figure 5 shows, the MSE of the test dataset starts increase from hidden neuron number 8 even though the MSE of train dataset still decreases. It means that it starts to be overfitted to the train dataset.\\
 \clearpage
 \subsubsection{Variations of MSE during training}
 These plots are the the variations of the MSE with three diﬀerent number of hidden neurons(2,8 and 40) for solvers('lbfgs','sgd' and 'adam')\\
 \begin{figure}[h]
-	\includegraphics[width=0.4\textwidth]{ex_1_1_d_lbfgs.png}\\
-	\caption{MSE plot with the hidden neuron number(2,4 and 8) and solver lbfgs}
-	\includegraphics[width=0.4\textwidth]{ex_1_1_d_sgd.png}\\
-	\caption{MSE plot with the hidden neuron number(2,4 and 8) and solver sgd}
-	\includegraphics[width=0.4\textwidth]{ex_1_1_d_adam.png}\\
-	\caption{MSE plot with the hidden neuron number(2,4 and 8) and solver adam}
+  \includegraphics[width=0.4\textwidth]{ex_1_1_d_lbfgs.png}\\
+  \caption{MSE plot with the hidden neuron number(2,4 and 8) and solver lbfgs}
+  \includegraphics[width=0.4\textwidth]{ex_1_1_d_sgd.png}\\
+  \caption{MSE plot with the hidden neuron number(2,4 and 8) and solver sgd}
+  \includegraphics[width=0.4\textwidth]{ex_1_1_d_adam.png}\\
+  \caption{MSE plot with the hidden neuron number(2,4 and 8) and solver adam}
 \end{figure}
 \\
 \noindent
@@ -87,7 +87,28 @@ Adam(stochastic gradient-based optimizer) seems to perform best in this problem.
 The interesting fact of Figure 9 is that it seems to overcome overfitting problem in the case of hidden neuron number 40. Adam(stochastic gradient-based optimizer) can overcome the overfitting problem by sub-sampling the whole dataset. Overfitting problem can occur because it is exactly fitted to the train set but if Adam uses sub-sampling, it can avoid this by fitting the optimal function to the data subset.\\
 I think Adam works well when the number of nuerons increases. Because, when the number of neruons increases, the risk of overfitting problem also increase. Then, Adam can avoid the overfitting problem by sub-sampling. That is, Adam is more appropriate than other solvers.
 \subsection{Regularized Neural Networks}
+\subsubsection{Weight Decay}
+\subsubsection{Early Stopping}
+\subsubsection{Combining the tricks}
 \section{Face Recognition with Neural Networks}
 \subsection{Pose Recognition}
+The confusion matrix is below. Pose 'left' and 'right' was seperated better than others.\\
+\[
+\begin{bmatrix}
+  121 & 3 & 4 & 13 \\
+  0 & 139 & 0 & 2 \\
+  0 & 0 & 137 & 1 \\
+  10 & 5 & 1 & 128
+\end{bmatrix}
+\]
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=0.5\textwidth]{ex_2_1_random.png}\\
+  \caption{random image plot}
+  \includegraphics[width=0.7\textwidth]{ex_2_1_hidden.png}\\
+  \caption{hidden layer weights plot}
+  \end{center}
+\end{figure}\\
+It looks like hair and sunglasses get more weights then others.
 \subsection{Face Recognition}
 \end{document}
