@@ -72,7 +72,7 @@ def ex_1_1_b(x_train, x_test, y_train, y_test):
         trained_regressor = trained_regressor.fit(x_train,y_train)
         train_mses[i] = calculate_mse(trained_regressor,x_train,y_train)
         test_mses[i] = calculate_mse(trained_regressor,x_test,y_test)
-    
+
     print ("Train_mses")
     print (train_mses)
     print ("Train_min")
@@ -178,7 +178,7 @@ def ex_1_2_a(x_train, x_test, y_train, y_test):
     r = 0
     for alph in alphas :
         for i in range(n_iterations):
-            trained_regressor = MLPRegressor(hidden_layer_sizes=(8, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=200,random_state=i)
+            trained_regressor = MLPRegressor(hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=200,random_state=i)
             trained_regressor = trained_regressor.fit(x_train,y_train)
             train_mses[r][i] = calculate_mse(trained_regressor,x_train,y_train)
             test_mses[r][i] = calculate_mse(trained_regressor,x_test,y_test)
@@ -205,28 +205,36 @@ def ex_1_2_b(x_train, x_test, y_train, y_test):
     test_mse_end = numpy.zeros(n_random_seed)
     test_mse_early_stopping = numpy.zeros(n_random_seed)
     test_mse_ideal = numpy.zeros(n_random_seed)
+    easy_stopping_iter = []
+    rand_seeds = []
     r = 0
     for i in range(n_random_seed) :
         val_mses = 0
         test_val_mses = 0
-
         test_mses = 0
-        
-        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=pow(10,-3),tol= 1e-8, max_iter=20,random_state=i)
+        stop_iter = 200
+        rand_seed = np.random.randint(2)
+
+        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(40, ), activation='logistic', solver='lbfgs', alpha=pow(10,-3),tol= 1e-8, max_iter=20,random_state=rand_seed)
         for j in range(100):
             trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
             temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
             if val_mses == 0 or val_mses > temp_val_mses:
                 val_mses = temp_val_mses
                 test_val_mses = calculate_mse(trained_regressor,x_test,y_test)
+                stop_iter = j
 
             temp_test_mses = calculate_mse(trained_regressor,x_test,y_test)
             if test_mses == 0 or test_mses > temp_test_mses:
-                test_mses = temp_test_mses    
+                test_mses = temp_test_mses
         test_mse_end[i] = calculate_mse(trained_regressor,x_test,y_test)
         test_mse_early_stopping[i] = test_val_mses
         test_mse_ideal[i] = test_mses
+        easy_stopping_iter.append(stop_iter)
+        rand_seeds.append(rand_seed)
     plot_bars_early_stopping_mse_comparison(test_mse_end, test_mse_early_stopping, test_mse_ideal)
+    print(easy_stopping_iter)
+    print(rand_seeds)
     pass
 
 
@@ -239,54 +247,74 @@ def ex_1_2_c(x_train, x_test, y_train, y_test):
     :param y_test:
     :return:
     """
-    h_layer_size = 40
-    alph = pow(10,-2)
-    
-    x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
+    train_err_means = np.zeros(11)
+    train_err_stds = np.zeros(11)
+    val_err_means = np.zeros(11)
+    val_err_stds = np.zeros(11)
+    test_err_means = np.zeros(11)
+    test_err_stds = np.zeros(11)
+    opt_seeds = np.zeros(11)
+    opt_trains = np.zeros(11)
+    opt_vals = np.zeros(11)
+    opt_tests = np.zeros(11)
+    h_layer_size = 25
+    solver = 'lbfgs'
+    alphas = [pow(10,-8),pow(10,-7),pow(10,-6),pow(10,-5),pow(10,-4),pow(10,-3),pow(10,-2),pow(10,-1),1,10,100]
+
     n_random_seed = 10
-    test_mse_list = numpy.zeros(n_random_seed)
-    val_mse_list = numpy.zeros(n_random_seed)
-    train_mse_list = numpy.zeros(n_random_seed)
-    
-    for i in range(n_random_seed) :
-        val_mses = 0
-        test_mses = 0 
-        train_mses = 0   
-        trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(h_layer_size, ), activation='logistic', solver='lbfgs', alpha=alph,tol= 1e-8, max_iter=20,random_state=i)
-        for j in range(100):
-            trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
-            temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
-            if val_mses == 0 or val_mses > temp_val_mses:
-                val_mses = temp_val_mses
-                test_mses = calculate_mse(trained_regressor,x_test,y_test)
-                train_mses = calculate_mse(trained_regressor,x_train,y_train)
+    x_newtrain, x_val, y_newtrain, y_val = train_test_split(x_train, y_train, test_size=0.5, random_state=42)
 
-        test_mse_list[i] = test_mses
-        val_mse_list[i] = val_mses
-        train_mse_list[i] = train_mses
-    print ("Traing set error")
-    print ("min : ")
-    print (train_mse_list.min())
-    print ("standard deviation")
-    print (train_mse_list.std())
-    print ("Validation set error")
-    print ("min : ")
-    print (val_mse_list.min())
-    print ("standard deviation")
-    print (val_mse_list.std())
-    print ("Test set error")
-    print ("min")
-    print (test_mse_list.min())
-    print ("standard deviation")
-    print (test_mse_list.std())
+    for k in range(11) :
+        test_mse_list = numpy.zeros(n_random_seed)
+        val_mse_list = numpy.zeros(n_random_seed)
+        train_mse_list = numpy.zeros(n_random_seed)
+        random_seeds = numpy.zeros(n_random_seed)
 
-    ind = np.argmin(val_mse_list)
-    print ("Optimal random seed")
-    print ("Train error : ")
-    print (train_mse_list[ind])
-    print ("Validation error")
-    print (val_mse_list[ind])
-    print ("Test error : ")
-    print (test_mse_list[ind])
+        for i in range(n_random_seed) :
+            val_mses = 0
+            test_mses = 0
+            train_mses = 0
+            random_seed = np.random.randint(10000)
+            trained_regressor = MLPRegressor(warm_start = True, hidden_layer_sizes=(h_layer_size, ), activation='logistic', solver=solver, alpha=alphas[k],tol= 1e-8, max_iter=20,random_state=random_seed)
+            for j in range(100):
+                trained_regressor = trained_regressor.fit(x_newtrain,y_newtrain)
+                temp_val_mses = calculate_mse(trained_regressor,x_val,y_val)
+                if val_mses == 0 or val_mses > temp_val_mses:
+                    val_mses = temp_val_mses
+                    test_mses = calculate_mse(trained_regressor,x_test,y_test)
+                    train_mses = calculate_mse(trained_regressor,x_train,y_train)
 
+            test_mse_list[i] = test_mses
+            val_mse_list[i] = val_mses
+            train_mse_list[i] = train_mses
+            random_seeds[i] = random_seed
+
+        train_err_means[k] = train_mse_list.mean()
+        train_err_stds[k] = train_mse_list.std()
+        val_err_means[k] = val_mse_list.mean()
+        val_err_stds[k] = val_mse_list.std()
+        test_err_means[k] = test_mse_list.mean()
+        test_err_stds[k] = test_mse_list.std()
+
+        ind = np.argmin(val_mse_list)
+        opt_seeds[k] = random_seeds[ind]
+        opt_trains[k] = train_mse_list[ind]
+        opt_vals[k] = val_mse_list[ind]
+        opt_tests[k] = test_mse_list[ind]
+
+    print ("===[Traing set error]===")
+    i = np.argmin(train_err_means)
+    print ("mean:", train_err_means[i], ", std:", train_err_stds[i] , "when a =", alphas[i])
+    print ("Optimal random seed) train:", opt_trains[i], ", val:", opt_vals[i], ", test:", opt_tests[i])
+    print ("random seed was", opt_seeds[i])
+    print ("===[Validation set error]===")
+    i = np.argmin(val_err_means)
+    print ("mean:", val_err_means[i], ", std:", val_err_stds[i] , "when a =", alphas[i])
+    print ("Optimal random seed) train:", opt_trains[i], ", val:", opt_vals[i], ", test:", opt_tests[i])
+    print ("random seed was", opt_seeds[i])
+    print ("===[Test set error]===")
+    i = np.argmin(test_err_means)
+    print ("mean:", test_err_means[i], ", std:", test_err_stds[i] , "when a =", alphas[i])
+    print ("Optimal random seed) train:", opt_trains[i], ", val:", opt_vals[i], ", test:", opt_tests[i])
+    print ("random seed was", opt_seeds[i])
     pass
