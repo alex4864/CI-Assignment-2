@@ -1,7 +1,7 @@
 from sklearn.metrics import confusion_matrix, mean_squared_error
 
 from sklearn.neural_network.multilayer_perceptron import MLPClassifier
-from nn_classification_plot import plot_hidden_layer_weights, plot_histogram_of_acc
+from nn_classification_plot import plot_hidden_layer_weights, plot_histogram_of_acc, plot_images
 import numpy as np
 
 __author__ = 'bellec,subramoney'
@@ -61,3 +61,12 @@ def ex_2_2(input1, target1, input2, target2):
         testScores.append(mlp.score(input2, individualTarget2))
 
     plot_histogram_of_acc(trainingScores, testScores)
+    best_index = testScores.index(max(testScores))
+    best_prediction = classifiers[best_index].predict(input2)
+
+    missclassified_images = []
+    for i, pred in enumerate(best_prediction):
+        if pred != individualTarget2[i]:
+            missclassified_images.append(i)
+
+    plot_images(input2, missclassified_images)

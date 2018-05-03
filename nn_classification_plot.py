@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,6 +16,17 @@ __author__ = 'bellec,subramoney'
 
 IMAGE_DIM = (32, 30)
 
+def plot_images(inp, image_pool, n_images=3):
+    fig, ax_list = plt.subplots(1, n_images)
+    image_numbers = random.sample(image_pool, n_images)
+    for k_i, image_number in enumerate(image_numbers):
+        ax = ax_list[k_i]
+        ax.set_title("Image number {}".format(image_number))
+        # Rotate the image the right way using .T
+        ax.imshow(inp[image_number, :].reshape(*IMAGE_DIM).T, cmap=plt.cm.gray)
+        ax.set_xticks(())
+        ax.set_yticks(())
+    plt.show()
 
 def plot_random_images(inp, n_images=3):
     """
