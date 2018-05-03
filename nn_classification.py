@@ -50,23 +50,26 @@ def ex_2_2(input1, target1, input2, target2):
     individualTarget2 = target2[:, 0]
 
     classifiers = []
-    trainingScores = []
-    testScores = []
+    training_scores = []
+    test_scores = []
     for i in range(10):
         classifiers.append(MLPClassifier(activation='tanh', hidden_layer_sizes=20, max_iter=1000, random_state=i))
 
     for mlp in classifiers:
         mlp.fit(input1, individualTarget1)
-        trainingScores.append(mlp.score(input1, individualTarget1))
-        testScores.append(mlp.score(input2, individualTarget2))
+        training_scores.append(mlp.score(input1, individualTarget1))
+        test_scores.append(mlp.score(input2, individualTarget2))
 
-    plot_histogram_of_acc(trainingScores, testScores)
-    best_index = testScores.index(max(testScores))
+    plot_histogram_of_acc(training_scores, test_scores)
+    best_index = test_scores.index(max(test_scores))
     best_prediction = classifiers[best_index].predict(input2)
 
-    missclassified_images = []
+    cnf_matrix = confusion_matrix(individualTarget2, best_prediction)
+    print(cnf_matrix)
+
+    misclassified_images = []
     for i, pred in enumerate(best_prediction):
         if pred != individualTarget2[i]:
-            missclassified_images.append(i)
+            misclassified_images.append(i)
 
-    plot_images(input2, missclassified_images)
+    plot_images(input2, misclassified_images)
