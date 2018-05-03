@@ -48,7 +48,7 @@ def main():
     ## End 2.1
 
     ## 2.2
-    # ex_2_2(input1, target1, input2, target2)
+    ex_2_2(input1, target1, input2, target2)
     ## End 2.2
 
 

@@ -44,14 +44,20 @@ def ex_2_1(input2, target2):
     print(cnf_matrix)
     return
 
+
 def ex_2_2(input1, target1, input2, target2):
-    """
-    Solution for exercise 2.2
-    :param input1: The input from dataset1
-    :param target1: The target from dataset1
-    :param input2: The input from dataset2
-    :param target2: The target from dataset2
-    :return:
-    """
-    ## TODO
-    pass
+    individualTarget1 = target1[:, 0]
+    individualTarget2 = target2[:, 0]
+
+    classifiers = []
+    trainingScores = []
+    testScores = []
+    for i in range(10):
+        classifiers.append(MLPClassifier(activation='tanh', hidden_layer_sizes=20, max_iter=1000, random_state=i))
+
+    for mlp in classifiers:
+        mlp.fit(input1, individualTarget1)
+        trainingScores.append(mlp.score(input1, individualTarget1))
+        testScores.append(mlp.score(input2, individualTarget2))
+
+    plot_histogram_of_acc(trainingScores, testScores)
